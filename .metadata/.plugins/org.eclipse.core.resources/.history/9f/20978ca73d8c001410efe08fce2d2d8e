@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <!-- <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Add a New Trip" /> -->
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_name" />
+    
+    <EditText android:inputType="text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:hint="@string/enter_trip_name"
+        android:id="@+id/tripNameEntered"
+        />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_desc" />
+    
+    <EditText android:inputType="text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:hint="@string/enter_trip_desc"
+        android:id="@+id/tripDescEntered"
+        />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/est_trip_cost" />
+    
+    <EditText android:inputType="numberDecimal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:hint="@string/enter_est_trip_cost"
+        android:id="@+id/estTripCostEntered"
+        />
+
+     <Button
+         android:id="@+id/add"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/add_trip" 
+         android:onClick="addTrip"/>
+    
+
+</RelativeLayout>
