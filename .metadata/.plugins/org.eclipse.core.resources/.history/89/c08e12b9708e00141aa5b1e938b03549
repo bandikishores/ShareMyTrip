@@ -1,0 +1,9 @@
+package com.bandi.sharemytrip.data;
+
+public class Place 
+{
+	private String id; /* Place id */
+	private double estTripCost;
+	private String description;
+
+}

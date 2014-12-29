@@ -1,0 +1,59 @@
+package com.bandi.sharemytrip.data;
+
+import java.util.Date;
+
+import com.bandi.misc.Misc;
+
+public class Place 
+{
+	private Integer id; /* Place id */
+	private String name;
+	private String tripName;
+	private String placeDesc;
+	private String createdDttm;
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getTripName() {
+		return tripName;
+	}
+	public void setTripName(String tripName) {
+		this.tripName = tripName;
+	}
+	public String getPlaceDesc() {
+		return placeDesc;
+	}
+	public void setPlaceDesc(String placeDesc) {
+		this.placeDesc = placeDesc;
+	}
+
+	public String getCreatedDttm() {
+		return createdDttm;
+	}
+
+	public void setCreatedDttm(String createdDttm) {
+		this.createdDttm = createdDttm;
+	}
+
+	public Date getCreatedDttmAsDate() {
+		return Misc.getDate(getCreatedDttm());
+	}
+
+	public void setCreatedDttm(Date createdDttm) {
+		setCreatedDttm(Misc.getDate(createdDttm));
+	}
+
+
+	
+}

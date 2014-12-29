@@ -1,0 +1,131 @@
+package com.bandi.sharemytrip.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bandi.misc.Category;
+import com.bandi.sharemytrip.data.Friend;
+import com.bandi.sharemytrip.database.FriendDBHelper;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+public class FriendDataSource 
+{
+	private static final String LOGCAT = null;
+	
+	// Database fields
+	private SQLiteDatabase database;
+	private FriendDBHelper dbHelper;
+	private String[] allColumns = 
+		{ 
+			FriendDBHelper.COLUMN_FRIEND_NAME_PK,
+			FriendDBHelper.COLUMN_NUMBER, 
+			FriendDBHelper.COLUMN_ADDRESS,
+			FriendDBHelper.COLUMN_EMAIL,
+			FriendDBHelper.COLUMN_CONTACT_ID
+		};
+
+	public FriendDataSource(Context context) 
+	{
+		dbHelper = new FriendDBHelper(context);
+	}
+
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+
+	public void close() {
+		dbHelper.close();
+	}
+
+	public Friend createFriend(String friendName, String number, String addr, String email, int contactId) 
+	{
+		ContentValues values = new ContentValues();
+		values.put(FriendDBHelper.COLUMN_FRIEND_NAME_PK, friendName);
+		values.put(FriendDBHelper.COLUMN_NUMBER, number);
+		values.put(FriendDBHelper.COLUMN_ADDRESS, addr);
+		values.put(FriendDBHelper.COLUMN_EMAIL, email);
+		values.put(FriendDBHelper.COLUMN_CONTACT_ID, contactId);
+		
+		database.insert(FriendDBHelper.TABLE_FRIEND, null, values);
+		Cursor cursor = database.query(FriendDBHelper.TABLE_FRIEND,
+				allColumns, FriendDBHelper.COLUMN_FRIEND_NAME_PK + " = '" + friendName + "'", null,
+				null, null, null);
+		cursor.moveToFirst();
+		Friend newFriend = cursorToFriend(cursor);
+		cursor.close();
+		return newFriend;
+	}
+
+	public void deleteFriend(String friendName) 
+	{
+		Log.d(Category.DATA_SOURCE,"Friend deleted with id: " + friendName);
+		
+		database.delete(FriendDBHelper.TABLE_FRIEND, 
+				FriendDBHelper.COLUMN_FRIEND_NAME_PK + " = '" + friendName + "'", 
+				null);
+	}
+
+	public void deleteFriend(Friend friend) 
+	{
+		String id = friend.getName();
+		deleteFriend(id);
+	}
+
+	public List<Friend> getAllFriends() 
+	{
+		List<Friend> friends = new ArrayList<Friend>();
+
+		Cursor cursor = database.query(FriendDBHelper.TABLE_FRIEND,
+				allColumns, null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) 
+		{
+			Friend friend = cursorToFriend(cursor);
+			friends.add(friend);
+			cursor.moveToNext();
+		}
+		// make sure to close the cursor
+		cursor.close();
+		return friends;
+	}
+
+	private Friend cursorToFriend(Cursor cursor) 
+	{
+		Friend friend = new Friend();
+		friend.setName(cursor.getString(0));
+		friend.setNumber(cursor.getString(1));
+		friend.setAddress(cursor.getString(2));
+		friend.setEmail(cursor.getString(3));
+		friend.setContactId(cursor.getInt(4));
+		return friend;
+	}
+	
+	public Friend getFriend(String friendName) 
+	{
+		Friend friend = null;
+		String selectQuery = "SELECT * FROM "+ FriendDBHelper.TABLE_FRIEND +" where "+FriendDBHelper.COLUMN_FRIEND_NAME_PK+"='" + friendName + "'";
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) 
+		{
+			friend = cursorToFriend(cursor);
+			cursor.close();
+		}
+		return friend;
+	}
+
+	public void deleteAllFriends() 
+	{
+		Log.d(Category.DATA_SOURCE,"Deleting All Friends " );
+		database.delete(FriendDBHelper.TABLE_FRIEND, 
+				null, 
+				null);
+	}	
+
+}

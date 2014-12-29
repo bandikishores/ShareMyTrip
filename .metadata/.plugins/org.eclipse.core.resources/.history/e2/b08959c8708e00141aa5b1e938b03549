@@ -1,0 +1,10 @@
+package com.bandi.sharemytrip.data;
+
+public class Place 
+{
+	private String id; /* Place id */
+	private String name;
+	private String tripName;
+	private String placeDesc;
+
+}

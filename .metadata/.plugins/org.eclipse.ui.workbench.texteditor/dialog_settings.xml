@@ -3,30 +3,36 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="38" key="DIALOG_Y_ORIGIN"/>
-		<item value="935" key="DIALOG_X_ORIGIN"/>
 		<item value="380" key="DIALOG_HEIGHT"/>
+		<item value="935" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="datasource" key="selection"/>
 		<list key="findhistory">
-			<item value="simple_list_item"/>
-			<item value="simple_list_item_1"/>
-			<item value="title_activity_add_trip"/>
-			<item value="settings"/>
-			<item value="#cccc"/>
-			<item value="log"/>
-			<item value="Log"/>
-			<item value="componen"/>
+			<item value="datasource"/>
+			<item value="onSectionAttached("/>
+			<item value="mDrawerListView"/>
+			<item value="onCreateView("/>
+			<item value="Toa"/>
+			<item value="simple_lis"/>
+			<item value="mCallbacks"/>
+			<item value="selectItem("/>
 		</list>
 		<list key="replacehistory">
-			<item value="Trip"/>
-			<item value="TripDBHelper"/>
+			<item value="paymentSummary"/>
+			<item value="PaymentSummary"/>
+			<item value="PaymentSummaryDBHelper"/>
+			<item value="Expenditure"/>
+			<item value="TABLE_EXPENDITURE"/>
+			<item value="TABLE_E"/>
+			<item value="ExpenditureDataSource"/>
+			<item value="ExpenditureDBHelper"/>
 		</list>
 	</section>
 </section>

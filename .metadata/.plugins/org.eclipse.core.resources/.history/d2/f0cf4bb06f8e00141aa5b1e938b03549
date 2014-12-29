@@ -1,0 +1,129 @@
+package com.bandi.sharemytrip.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bandi.sharemytrip.data.Friend;
+import com.bandi.sharemytrip.database.FriendDBHelper;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+public class FriendDataSource 
+{
+	private static final String LOGCAT = null;
+	
+	// Database fields
+	private SQLiteDatabase database;
+	private FriendDBHelper dbHelper;
+	private String[] allColumns = 
+		{ 
+			FriendDBHelper.COLUMN_FRIEND_NAME_PK,
+			FriendDBHelper.COLUMN_NUMBER, 
+			FriendDBHelper.COLUMN_ADDRESS,
+			FriendDBHelper.COLUMN_EMAIL,
+			FriendDBHelper.COLUMN_CONTACT_ID
+		};
+
+	public FriendDataSource(Context context) 
+	{
+		dbHelper = new FriendDBHelper(context);
+	}
+
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+
+	public void close() {
+		dbHelper.close();
+	}
+
+	public Friend createTrip(String friendName, String number, String addr, String email, int contactId) 
+	{
+		ContentValues values = new ContentValues();
+		values.put(FriendDBHelper.COLUMN_FRIEND_NAME_PK, friendName);
+		values.put(FriendDBHelper.COLUMN_NUMBER, number);
+		values.put(FriendDBHelper.COLUMN_ADDRESS, addr);
+		values.put(FriendDBHelper.COLUMN_EMAIL, email);
+		values.put(FriendDBHelper.COLUMN_CONTACT_ID, contactId);
+		
+		database.insert(FriendDBHelper.TABLE_FRIEND, null, values);
+		Cursor cursor = database.query(FriendDBHelper.TABLE_FRIEND,
+				allColumns, FriendDBHelper.COLUMN_FRIEND_NAME_PK + " = '" + friendName + "'", null,
+				null, null, null);
+		cursor.moveToFirst();
+		Friend newFriend = cursorToFriend(cursor);
+		cursor.close();
+		return newFriend;
+	}
+
+	public void deleteTrip(String tripName) 
+	{
+		// System.out.println("Trip deleted with id: " + id);
+		Log.d(LOGCAT,"Trip deleted with id: " + tripName);
+		
+		database.delete(FriendDBHelper.TABLE_TRIP, 
+				FriendDBHelper.COLUMN_TRIP_NAME_PK + " = '" + tripName + "'", 
+				null);
+	}
+
+	public void deleteTrip(Trip trip) 
+	{
+		String id = trip.getName();
+		deleteTrip(id);
+	}
+
+	public List<Trip> getAllTrips() 
+	{
+		List<Trip> trips = new ArrayList<Trip>();
+
+		Cursor cursor = database.query(FriendDBHelper.TABLE_TRIP,
+				allColumns, null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) 
+		{
+			Trip trip = cursorToTrip(cursor);
+			trips.add(trip);
+			cursor.moveToNext();
+		}
+		// make sure to close the cursor
+		cursor.close();
+		return trips;
+	}
+
+	private Friend cursorToFriend(Cursor cursor) 
+	{
+		Friend trip = new Friend();
+		trip.setName(cursor.getString(0));
+		trip.setDescription(cursor.getString(1));
+		trip.setEstTripCost(cursor.getDouble(2));
+		return trip;
+	}
+	
+	public Trip getTrip(String tripName) 
+	{
+		Trip trip = null;
+		String selectQuery = "SELECT * FROM Trip where "+FriendDBHelper.COLUMN_TRIP_NAME_PK+"='" + tripName + "'";
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) 
+		{
+			trip = cursorToTrip(cursor);
+			cursor.close();
+		}
+		return trip;
+	}
+
+	public void deleteAllTrips() 
+	{
+		Log.d(LOGCAT,"Deleting All Trips " );
+		database.delete(FriendDBHelper.TABLE_TRIP, 
+				null, 
+				null);
+	}	
+
+}

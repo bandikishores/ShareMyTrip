@@ -1,0 +1,10 @@
+package com.bandi.sharemytrip.data;
+
+public class Expenditure 
+{
+	private integer id; /* Trip Name */
+	private double estTripCost;
+	private String description;
+	private String createdDttm;
+
+}

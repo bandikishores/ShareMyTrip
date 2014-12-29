@@ -1,0 +1,5 @@
+package com.bandi.sharemytrip.database;
+
+public class FriendDBHelper {
+
+}

@@ -1,0 +1,9 @@
+package com.bandi.sharemytrip.data;
+
+public class Friend 
+{
+	private String id; /* Friend Name */
+	private double estTripCost;
+	private String description;
+
+}

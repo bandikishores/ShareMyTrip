@@ -1,0 +1,6 @@
+package com.bandi.sharemytrip.dao;
+
+public class PlaceDataSource 
+{
+
+}

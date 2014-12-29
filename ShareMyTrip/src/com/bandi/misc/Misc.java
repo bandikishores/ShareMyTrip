@@ -1,8 +1,14 @@
 package com.bandi.misc;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
+
+import android.util.Log;
 
 public class Misc 
 {
@@ -28,7 +34,8 @@ public class Misc
             return true;
     }
 
-    public static boolean isNullList(Collection lookupList) {
+    @SuppressWarnings("rawtypes")
+	public static boolean isNullList(Collection lookupList) {
         if(lookupList == null || lookupList.size() == 0) return true;
         for (Iterator iterator = lookupList.iterator(); iterator.hasNext();) {
                 if(iterator.next() != null) return false;
@@ -36,7 +43,8 @@ public class Misc
          return true;
     }
 
-    public static boolean isNullMap(Map map) {
+    @SuppressWarnings("rawtypes")
+	public static boolean isNullMap(Map map) {
 		if(map == null || map.size() == 0) 
 			return true;
 		else        
@@ -48,7 +56,8 @@ public class Misc
 		return ((s == null) || (s.length() == 0) || "null".equals(s));
 	}
     
-    public static boolean isInt(String s)
+    @SuppressWarnings("unused")
+	public static boolean isInt(String s)
 	{
 		boolean valid = true;
 
@@ -79,4 +88,36 @@ public class Misc
 
 		return valid;
 	}
+    
+    public static Date getCurrentDate()
+    {
+    	return new Date();
+    }
+    
+    public static String getCurrentDateAsString()
+    {
+    	return getDate(getCurrentDate());
+    }
+    
+    public static String getDate(Date currDate)
+    {
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    	return dateFormat.format(currDate);
+    }
+    
+    public static Date getDate(String dateStr)
+    {
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    	try 
+    	{
+			return dateFormat.parse(dateStr);
+		} 
+    	catch (ParseException e) 
+    	{
+			Log.d(Category.MISC, "error while converting date to String");
+			return new Date();
+		}
+    }
+    
+    
 }

@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bandi.sharemytrip.TripDetailsActivity" >
+
+    <item
+        android:id="@+id/deleteTrip"
+        android:orderInCategory="100"
+        android:title="@string/delete_trip"
+        app:showAsAction="never" 
+        android:onClick="deleteTrip"/>
+
+</menu>

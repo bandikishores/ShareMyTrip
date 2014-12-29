@@ -1,0 +1,8 @@
+package com.bandi.sharemytrip.database;
+
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class PlaceDBHelper extends SQLiteOpenHelper
+{
+
+}

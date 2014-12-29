@@ -37,37 +37,36 @@
         tools:layout="@layout/fragment_navigation_drawer" />
     
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/triplist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello" />
-    
+	    <ListView
+	        android:id="@+id/triplist"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Trip" 
-            android:onClick="onClick"/>
-
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete All Trip" 
-            android:onClick="onClick"/>
-        
-    </LinearLayout>
+	   <!--  <LinearLayout
+	        android:id="@+id/group"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	
+	        <Button
+	            android:id="@+id/add"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/add_trip" 
+	            android:onClick="onClick"/>
+	
+	        <Button
+	            android:id="@+id/delete"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/delete_all_trips" 
+	            android:onClick="onClick"/>
+	        
+	    </LinearLayout> -->
     
 	</LinearLayout> 
 

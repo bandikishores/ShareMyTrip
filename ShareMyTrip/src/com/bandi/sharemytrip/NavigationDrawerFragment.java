@@ -1,7 +1,6 @@
 package com.bandi.sharemytrip;
 
-import com.sharemytrip.R;
-
+import com.bandi.sharemytrip.R;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -99,20 +98,35 @@ public class NavigationDrawerFragment extends Fragment {
 			Bundle savedInstanceState) {
 		mDrawerListView = (ListView) inflater.inflate(
 				R.layout.fragment_navigation_drawer, container, false);
-		mDrawerListView
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						selectItem(position);
-					}
-				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
-				.getThemedContext(), android.R.layout.simple_list_item_1,
-				android.R.id.text1, new String[] {
-						getString(R.string.title_section1),
-						getString(R.string.title_section2),
-						getString(R.string.title_section3), }));
+				.getThemedContext(), android.R.layout.simple_list_item_2,
+				android.R.id.text1, new String[] 
+						{
+							getString(R.string.all_trips),
+							getString(R.string.all_friends),
+						 }));
+		
+		mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() 
+	    {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, final View view,
+	            int position, long id) 
+	        {
+	        	Toast.makeText(getActionBar().getThemedContext(), "Clicked.", Toast.LENGTH_SHORT).show();
+				selectItem(position);
+	        }
+
+	      });
+		
+		/*mDrawerListView
+		.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Toast.makeText(mDrawerLayout.getContext(), "Clicked.", Toast.LENGTH_SHORT).show();
+				selectItem(position);
+			}
+		});*/
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mDrawerListView;
 	}
@@ -273,8 +287,8 @@ public class NavigationDrawerFragment extends Fragment {
 			return true;
 		}
 
-		if (item.getItemId() == R.id.action_example) {
-			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
+		if (item.getItemId() == R.id.about) {
+			Toast.makeText(getActivity(), "Created by Bandi Kishore.", Toast.LENGTH_SHORT)
 					.show();
 			return true;
 		}

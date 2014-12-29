@@ -1,0 +1,137 @@
+package com.bandi.sharemytrip.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.bandi.misc.Misc;
+import com.bandi.sharemytrip.data.Place;
+import com.bandi.sharemytrip.database.PlaceDBHelper;
+
+public class PlaceDataSource 
+{
+	private static final String LOGCAT = null;
+	
+	// Database fields
+	private SQLiteDatabase database;
+	private PlaceDBHelper dbHelper;
+	private String[] allColumns = 
+		{ 
+			PlaceDBHelper.COLUMN_PLACE_ID_PK,
+			PlaceDBHelper.COLUMN_NAME, 
+			PlaceDBHelper.COLUMN_TRIP_NAME,
+			PlaceDBHelper.COLUMN_PLACE_DESC,
+			PlaceDBHelper.COLUMN_CREATED_DTTM
+		};
+
+	public PlaceDataSource(Context context) 
+	{
+		dbHelper = new PlaceDBHelper(context);
+	}
+
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+
+	public void close() {
+		dbHelper.close();
+	}
+
+	public Place createTrip(String placeName, String tripName, String placeDesc) 
+	{
+		ContentValues values = new ContentValues();
+		values.put(PlaceDBHelper.COLUMN_NAME, placeName);
+		values.put(PlaceDBHelper.COLUMN_TRIP_NAME, tripName);
+		values.put(PlaceDBHelper.COLUMN_PLACE_DESC, placeDesc);
+		values.put(PlaceDBHelper.COLUMN_CREATED_DTTM, Misc.getCurrentDateAsString());
+		
+		database.insert(PlaceDBHelper.TABLE_PLACE, null, values);
+		
+		String whereClause = 
+				PlaceDBHelper.COLUMN_NAME + " = '" + placeName + "'" +
+				PlaceDBHelper.COLUMN_TRIP_NAME + " = '" + tripName + "'";
+		
+		Cursor cursor = database.query(PlaceDBHelper.TABLE_PLACE,
+				allColumns, 
+				whereClause, null,
+				null, null, null);
+		
+		cursor.moveToFirst();
+		Trip newTrip = cursorToTrip(cursor);
+		cursor.close();
+		return newTrip;
+	}
+
+	public void deleteTrip(String tripName) 
+	{
+		// System.out.println("Trip deleted with id: " + id);
+		Log.d(LOGCAT,"Trip deleted with id: " + tripName);
+		
+		database.delete(TripDBHelper.TABLE_TRIP, 
+				TripDBHelper.COLUMN_TRIP_NAME_PK + " = '" + tripName + "'", 
+				null);
+	}
+
+	public void deleteTrip(Trip trip) 
+	{
+		String id = trip.getName();
+		deleteTrip(id);
+	}
+
+	public List<Trip> getAllTrips() 
+	{
+		List<Trip> trips = new ArrayList<Trip>();
+
+		Cursor cursor = database.query(TripDBHelper.TABLE_TRIP,
+				allColumns, null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) 
+		{
+			Trip trip = cursorToTrip(cursor);
+			trips.add(trip);
+			cursor.moveToNext();
+		}
+		// make sure to close the cursor
+		cursor.close();
+		return trips;
+	}
+
+	private Trip cursorToTrip(Cursor cursor) 
+	{
+		Trip trip = new Trip();
+		trip.setName(cursor.getString(0));
+		trip.setDescription(cursor.getString(1));
+		trip.setEstTripCost(cursor.getDouble(2));
+		trip.setCreatedDttm(cursor.getString(3));
+		return trip;
+	}
+	
+	public Trip getTrip(String tripName) 
+	{
+		Trip trip = null;
+		String selectQuery = "SELECT * FROM "+ TripDBHelper.TABLE_TRIP +" where "+TripDBHelper.COLUMN_TRIP_NAME_PK+"='" + tripName + "'";
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) 
+		{
+			trip = cursorToTrip(cursor);
+			cursor.close();
+		}
+		return trip;
+	}
+
+	public void deleteAllTrips() 
+	{
+		Log.d(LOGCAT,"Deleting All Trips " );
+		database.delete(TripDBHelper.TABLE_TRIP, 
+				null, 
+				null);
+	}	
+
+}

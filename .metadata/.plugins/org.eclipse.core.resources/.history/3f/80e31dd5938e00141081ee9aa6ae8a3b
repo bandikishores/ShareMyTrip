@@ -1,0 +1,141 @@
+package com.bandi.sharemytrip.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.bandi.misc.Misc;
+import com.bandi.sharemytrip.data.Expenditure;
+import com.bandi.sharemytrip.database.ExpenditureDBHelper;
+
+public class ExpenditureDataSource 
+{
+	private static final String LOGCAT = null;
+	
+	// Database fields
+	private SQLiteDatabase database;
+	private ExpenditureDBHelper dbHelper;
+	private String[] allColumns = 
+		{ 
+			ExpenditureDBHelper.COLUMN_EXPENDITURE_ID_PK,
+			ExpenditureDBHelper.COLUMN_PLACE_ID, 
+			ExpenditureDBHelper.COLUMN_FRIEND_NAME,
+			ExpenditureDBHelper.COLUMN_COST,
+			ExpenditureDBHelper.COLUMN_REASON,
+			ExpenditureDBHelper.COLUMN_CREATED_DTTM
+		};
+
+	public ExpenditureDataSource(Context context) 
+	{
+		dbHelper = new ExpenditureDBHelper(context);
+	}
+
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+
+	public void close() {
+		dbHelper.close();
+	}
+
+	public Expenditure createExpenditure(Integer placeId, String friendName, double cost, String reason) 
+	{
+		ContentValues values = new ContentValues();
+		values.put(ExpenditureDBHelper.COLUMN_PLACE_ID, placeId);
+		values.put(ExpenditureDBHelper.COLUMN_FRIEND_NAME, friendName);
+		values.put(ExpenditureDBHelper.COLUMN_COST, cost);
+		values.put(ExpenditureDBHelper.COLUMN_REASON, reason);
+		values.put(ExpenditureDBHelper.COLUMN_CREATED_DTTM, Misc.getCurrentDateAsString());
+		
+		database.insert(ExpenditureDBHelper.TABLE_EXPENDITURE, null, values);
+		
+		String whereClause = 
+				ExpenditureDBHelper.COLUMN_NAME + " = '" + placeName + "'" +
+						ExpenditureDBHelper.COLUMN_TRIP_NAME + " = '" + tripName + "'";
+		
+		Cursor cursor = database.query(ExpenditureDBHelper.TABLE_PLACE,
+				allColumns, 
+				whereClause, null,
+				null, null, null);
+		
+		
+		
+		cursor.moveToFirst();
+		Expenditure newExpenditure = cursorToExpenditure(cursor);
+		cursor.close();
+		return newExpenditure;
+	}
+
+	public void deleteExpenditure(String tripName) 
+	{
+		// System.out.println("Expenditure deleted with id: " + id);
+		Log.d(LOGCAT,"Expenditure deleted with id: " + tripName);
+		
+		database.delete(ExpenditureDBHelper.TABLE_EXPENDITURE, 
+				ExpenditureDBHelper.COLUMN_TRIP_NAME_PK + " = '" + tripName + "'", 
+				null);
+	}
+
+	public void deleteExpenditure(Expenditure trip) 
+	{
+		String id = trip.getName();
+		deleteExpenditure(id);
+	}
+
+	public List<Expenditure> getAllExpenditures() 
+	{
+		List<Expenditure> trips = new ArrayList<Expenditure>();
+
+		Cursor cursor = database.query(ExpenditureDBHelper.TABLE_EXPENDITURE,
+				allColumns, null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) 
+		{
+			Expenditure trip = cursorToExpenditure(cursor);
+			trips.add(trip);
+			cursor.moveToNext();
+		}
+		// make sure to close the cursor
+		cursor.close();
+		return trips;
+	}
+
+	private Expenditure cursorToExpenditure(Cursor cursor) 
+	{
+		Expenditure trip = new Expenditure();
+		trip.setName(cursor.getString(0));
+		trip.setDescription(cursor.getString(1));
+		trip.setEstExpenditureCost(cursor.getDouble(2));
+		trip.setCreatedDttm(cursor.getString(3));
+		return trip;
+	}
+	
+	public Expenditure getExpenditure(String tripName) 
+	{
+		Expenditure trip = null;
+		String selectQuery = "SELECT * FROM "+ ExpenditureDBHelper.TABLE_EXPENDITURE +" where "+ExpenditureDBHelper.COLUMN_TRIP_NAME_PK+"='" + tripName + "'";
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) 
+		{
+			trip = cursorToExpenditure(cursor);
+			cursor.close();
+		}
+		return trip;
+	}
+
+	public void deleteAllExpenditures() 
+	{
+		Log.d(LOGCAT,"Deleting All Expenditures " );
+		database.delete(ExpenditureDBHelper.TABLE_EXPENDITURE, 
+				null, 
+				null);
+	}	
+
+}

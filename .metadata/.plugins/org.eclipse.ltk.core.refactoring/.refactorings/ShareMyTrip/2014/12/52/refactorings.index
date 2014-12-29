@@ -1,0 +1,18 @@
+1419700726429	Rename method 'setTripName'
+1419700733692	Rename method 'getTripName'
+1419703842554	Move compilation unit
+1419703850988	Move compilation unit
+1419703859258	Move compilation unit
+1419704709383	Rename type 'TripActivity'
+1419704732648	Rename resource 'activity_trip.xml'
+1419704742276	Rename resource 'trip.xml'
+1419704758352	Delete element
+1419704807537	Delete element
+1419704815141	Delete element
+1419704819331	Delete element
+1419705360623	Delete element
+1419705365258	Delete element
+1419705378949	Delete element
+1419706816936	Wrap in Container
+1419706858027	Wrap in Container
+1419706873848	Wrap in Container

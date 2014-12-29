@@ -1,0 +1,42 @@
+package com.bandi.sharemytrip.data;
+
+public class Friend 
+{
+	private String id; /* Friend Name */
+	private long number;
+	private int contactId;
+	private String address;
+	private String email;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public long getNumber() {
+		return number;
+	}
+	public void setNumber(long number) {
+		this.number = number;
+	}
+	public int getContactId() {
+		return contactId;
+	}
+	public void setContactId(int contactId) {
+		this.contactId = contactId;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	
+}

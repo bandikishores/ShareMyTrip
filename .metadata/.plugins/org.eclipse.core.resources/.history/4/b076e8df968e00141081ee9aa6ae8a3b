@@ -1,0 +1,159 @@
+package com.bandi.sharemytrip.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.bandi.misc.Misc;
+import com.bandi.sharemytrip.data.PaymentSummary;
+import com.bandi.sharemytrip.database.PaymentSummaryDBHelper;
+
+public class PaymentSummaryDataSource 
+{
+	private static final String LOGCAT = null;
+	
+	// Database fields
+	private SQLiteDatabase database;
+	private PaymentSummaryDBHelper dbHelper;
+	private String[] allColumns = 
+		{ 
+			PaymentSummaryDBHelper.COLUMN_PAYMENT_SUMMARY_ID_PK,
+			PaymentSummaryDBHelper.COLUMN_EXPENDITURE_ID, 
+			PaymentSummaryDBHelper.COLUMN_PAID_FOR_FRIEND_NAME,
+			PaymentSummaryDBHelper.COLUMN_CREATED_DTTM
+		};
+
+	public PaymentSummaryDataSource(Context context) 
+	{
+		dbHelper = new PaymentSummaryDBHelper(context);
+	}
+
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+
+	public void close() {
+		dbHelper.close();
+	}
+
+	public PaymentSummary createPaymentSummary(Integer expenditureId, String friendName) 
+	{
+		ContentValues values = new ContentValues();
+		values.put(PaymentSummaryDBHelper.COLUMN_EXPENDITURE_ID, expenditureId);
+		values.put(PaymentSummaryDBHelper.COLUMN_PAID_FOR_FRIEND_NAME, friendName);
+		values.put(PaymentSummaryDBHelper.COLUMN_CREATED_DTTM, Misc.getCurrentDateAsString());
+		
+		database.insert(PaymentSummaryDBHelper.TABLE_PAYMENT_SUMMARY, null, values);
+		
+		String whereClause = 
+				PaymentSummaryDBHelper.COLUMN_EXPENDITURE_ID + " = " + expenditureId + " " +
+						PaymentSummaryDBHelper.COLUMN_PAID_FOR_FRIEND_NAME + " = '" + friendName + "'";
+		
+		Cursor cursor = database.query(PaymentSummaryDBHelper.TABLE_PAYMENT_SUMMARY,
+				allColumns, 
+				whereClause, null,
+				null, null, null);
+		
+		
+		
+		cursor.moveToFirst();
+		PaymentSummary newPaymentSummary = cursorToPaymentSummary(cursor);
+		cursor.close();
+		return newPaymentSummary;
+	}
+
+	public void deletePaymentSummary(Integer expenditureId, String friendName) 
+	{
+		// System.out.println("PaymentSummary deleted with id: " + id);
+		Log.d(LOGCAT,"PaymentSummary deleted with Expenditure id: " + expenditureId + " friend name : " + friendName);
+		
+		String whereClause = 
+				PaymentSummaryDBHelper.COLUMN_EXPENDITURE_ID + " = " + expenditureId + " " +
+						PaymentSummaryDBHelper.COLUMN_PAID_FOR_FRIEND_NAME + " = '" + friendName + "'";
+		
+		database.delete(PaymentSummaryDBHelper.TABLE_PAYMENT_SUMMARY, 
+				whereClause, 
+				null);
+	}
+
+	public void deletePaymentSummary(Integer id) 
+	{
+		// System.out.println("PaymentSummary deleted with id: " + id);
+		Log.d(LOGCAT,"PaymentSummary deleted with id: "+id);
+		
+		String whereClause = 
+				PaymentSummaryDBHelper.COLUMN_EXPENDITURE_ID_PK + " = " + id;
+		
+		database.delete(PaymentSummaryDBHelper.TABLE_EXPENDITURE, 
+				whereClause, 
+				null);
+	}
+
+	public void deletePaymentSummary(PaymentSummary expenditure) 
+	{
+		deletePaymentSummary(expenditure.getId());
+	}
+
+	public List<PaymentSummary> getAllPaymentSummarys() 
+	{
+		List<PaymentSummary> expenditures = new ArrayList<PaymentSummary>();
+
+		Cursor cursor = database.query(PaymentSummaryDBHelper.TABLE_EXPENDITURE,
+				allColumns, null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) 
+		{
+			PaymentSummary trip = cursorToPaymentSummary(cursor);
+			expenditures.add(trip);
+			cursor.moveToNext();
+		}
+		// make sure to close the cursor
+		cursor.close();
+		return expenditures;
+	}
+
+	private PaymentSummary cursorToPaymentSummary(Cursor cursor) 
+	{
+		PaymentSummary expenditure = new PaymentSummary();
+		expenditure.setId(cursor.getInt(0));
+		expenditure.setPlaceId(cursor.getInt(1));
+		expenditure.setFriendName(cursor.getString(2));
+		expenditure.setCost(cursor.getDouble(3));
+		expenditure.setReason(cursor.getString(4));
+		expenditure.setCreatedDttm(cursor.getString(5));
+		return expenditure;
+	}
+	
+	public PaymentSummary getPaymentSummary(Integer placeId, String friendName) 
+	{
+		PaymentSummary expenditure = null;
+		
+		String selectQuery = "SELECT * FROM "+ PaymentSummaryDBHelper.TABLE_EXPENDITURE +
+				" where "+PaymentSummaryDBHelper.COLUMN_PLACE_ID+"=" + placeId + " " +
+						  PaymentSummaryDBHelper.COLUMN_FRIEND_NAME+"='" + friendName + "'" ;
+		
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) 
+		{
+			expenditure = cursorToPaymentSummary(cursor);
+			cursor.close();
+		}
+		return expenditure;
+	}
+
+	public void deleteAllPaymentSummarys() 
+	{
+		Log.d(LOGCAT,"Deleting All PaymentSummarys " );
+		database.delete(PaymentSummaryDBHelper.TABLE_EXPENDITURE, 
+				null, 
+				null);
+	}	
+
+}
